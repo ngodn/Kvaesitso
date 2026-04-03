@@ -19,10 +19,12 @@ class ClaudeCodeCLIRepository(
 
     // Matches file paths in Claude responses
     private val filePathPatterns = listOf(
-        Regex("""/android-root/[^\s,;:'"()|]+"""),     // /android-root/sdcard/...
-        Regex("""/sdcard/[^\s,;:'"()|]+\.\w{2,4}"""),  // /sdcard/.../file.ext
-        Regex("""/storage/emulated/0/[^\s,;:'"()|]+\.\w{2,4}"""), // /storage/emulated/0/.../file.ext
-        Regex("""(?:PXL|IMG|VID|DSC|MVIMG)_\d+[^\s,;:'"()|]*\.\w{2,4}"""), // PXL_20260401_230817533.jpg
+        Regex("""/android-root/[^\s,;:'"()|]+\.\w{2,5}"""),  // /android-root/sdcard/.../file.ext
+        Regex("""/android-root/[^\s,;:'"()|]+/"""),            // /android-root/sdcard/.../dir/
+        Regex("""/sdcard/[^\s,;:'"()|]+\.\w{2,5}"""),         // /sdcard/.../file.ext
+        Regex("""/storage/emulated/0/[^\s,;:'"()|]+\.\w{2,5}"""), // /storage/emulated/0/.../file.ext
+        // Any filename with media extension (captures bare filenames in text)
+        Regex("""\b[\w._-]+\.(?:jpg|jpeg|png|gif|webp|mp4|mov|mkv|webm|mp3|m4a|pdf|apk|zip)\b""", RegexOption.IGNORE_CASE),
     )
 
     override fun search(query: String, allowNetwork: Boolean): Flow<ImmutableList<Searchable>> {
@@ -55,20 +57,27 @@ class ClaudeCodeCLIRepository(
                 )
             )
 
+            // Find directory context from the response (e.g., "/android-root/sdcard/Pictures/MyInsta/")
+            val dirContext = Regex("""/(?:android-root)?/(?:sdcard|storage/emulated/0)/[^\s,;:'"()|]*?/""")
+                .findAll(resultText)
+                .map { it.value.removePrefix("/android-root").trimEnd('/') + "/" }
+                .lastOrNull() ?: "/sdcard/DCIM/Camera/"
+
             // Extract file path results from all patterns
             val filePaths = mutableSetOf<String>()
             for (pattern in filePathPatterns) {
                 pattern.findAll(resultText).forEach { match ->
                     var path = match.value.trimEnd('.', ',', ')', '|')
-                    // Normalize to /sdcard/ prefix
+                    // Normalize: strip /android-root prefix
                     path = path.removePrefix("/android-root")
                     if (!path.startsWith("/")) {
-                        // Bare filename like PXL_xxx.jpg — try to find directory from context
-                        val dirMatch = Regex("""/(?:android-root)?/sdcard/[^\s,;:'"()|]+/""")
-                            .find(resultText)?.value?.removePrefix("/android-root")
-                        path = (dirMatch ?: "/sdcard/DCIM/Camera/") + path
+                        // Bare filename — prepend directory context
+                        path = dirContext + path
                     }
-                    filePaths.add(path)
+                    // Skip directories and non-file matches
+                    if (path.contains('.') && !path.endsWith("/")) {
+                        filePaths.add(path)
+                    }
                 }
             }
 
