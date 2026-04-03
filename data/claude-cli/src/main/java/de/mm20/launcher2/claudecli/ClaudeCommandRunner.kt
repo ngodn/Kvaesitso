@@ -32,8 +32,10 @@ class ClaudeCommandRunner {
             "3) Full Linux tools (find, grep, df, ffmpeg, imagemagick, etc.). " +
             "4) 'rtk' (Rust Token Killer) — a token-optimized CLI proxy. Use 'rtk' instead of raw commands " +
             "where possible for efficiency: 'rtk git status', 'rtk git log', 'rtk ls', 'rtk find ...', etc. " +
-            "If an rtk command fails, fall back to the non-rtk version (e.g., 'rtk find' fails → use 'find'). " +
-            "For file searches, prefer 'rtk find' first, fallback to 'find'. Be fast and direct."
+            "If an rtk command fails or returns no results, fall back to the non-rtk version " +
+            "(e.g., 'rtk find' fails or empty → use 'find'). " +
+            "For file searches, prefer 'rtk find' first, fallback to 'find'. " +
+            "If you truly cannot find anything after trying both, say so clearly. Be fast and direct."
 
         // KernelSU/Magisk su binary paths to try
         private val SU_PATHS = listOf(
