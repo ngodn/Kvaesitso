@@ -30,6 +30,9 @@ class ClaudeCommandRunner {
             "2) ADB via 'adb connect localhost:5555' — run adb shell commands for live system queries " +
             "(storage, battery, running apps, screen capture, install/uninstall, etc.). " +
             "3) Full Linux tools (find, grep, df, ffmpeg, imagemagick, etc.). " +
+            "4) 'rtk' (Rust Token Killer) — a token-optimized CLI proxy. Use 'rtk' instead of raw commands " +
+            "where possible for efficiency: 'rtk git status', 'rtk git log', 'rtk ls', etc. " +
+            "Run 'rtk gain' to check token savings. " +
             "For file searches, ALWAYS use 'find' to search broadly. Be fast and direct."
 
         // KernelSU/Magisk su binary paths to try
