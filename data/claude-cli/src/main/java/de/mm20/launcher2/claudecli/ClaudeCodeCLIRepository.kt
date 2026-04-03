@@ -63,26 +63,27 @@ class ClaudeCodeCLIRepository(
                 .map { it.value.removePrefix("/android-root").trimEnd('/') + "/" }
                 .lastOrNull() ?: "/sdcard/DCIM/Camera/"
 
-            // Extract file path results from all patterns
-            val filePaths = mutableSetOf<String>()
+            // Extract file path results from all patterns, deduplicate by filename
+            val filesByName = mutableMapOf<String, String>() // filename -> full path
             for (pattern in filePathPatterns) {
                 pattern.findAll(resultText).forEach { match ->
                     var path = match.value.trimEnd('.', ',', ')', '|')
-                    // Normalize: strip /android-root prefix
                     path = path.removePrefix("/android-root")
                     if (!path.startsWith("/")) {
-                        // Bare filename — prepend directory context
                         path = dirContext + path
                     }
-                    // Skip directories and non-file matches
                     if (path.contains('.') && !path.endsWith("/")) {
-                        filePaths.add(path)
+                        val fileName = path.substringAfterLast('/')
+                        // Prefer longer paths (more specific)
+                        val existing = filesByName[fileName]
+                        if (existing == null || path.length > existing.length) {
+                            filesByName[fileName] = path
+                        }
                     }
                 }
             }
 
-            for (filePath in filePaths) {
-                val fileName = filePath.substringAfterLast('/')
+            for ((fileName, filePath) in filesByName) {
                 results.add(
                     ClaudeResult(
                         title = fileName,
