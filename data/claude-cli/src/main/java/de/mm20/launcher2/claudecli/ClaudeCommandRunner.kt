@@ -12,7 +12,7 @@ class ClaudeCommandRunner {
 
     companion object {
         private const val TAG = "ClaudeCLI"
-        private const val CHROOT_CMD = "/data/adb/modules/chroot-distro/system/bin/chroot-distro"
+        private const val CHROOT_ROOT = "/data/local/chroot-distro/installed-rootfs/archlinux"
         private const val USER_HOME = "/home/maplestar"
 
         private const val SYSTEM_PROMPT = "You are a search assistant running inside Arch Linux on a rooted Android phone. " +
@@ -55,9 +55,10 @@ class ClaudeCommandRunner {
         val fullPath = "$USER_HOME/.local/bin:$USER_HOME/.local/share/mise/shims:$USER_HOME/.cargo/bin:" +
             "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-        // Connect ADB to localhost first (for live Android queries), then run claude
-        val shellCmd = "$CHROOT_CMD login archlinux --bind /:/android-root -- " +
-            "bash -c 'export PATH=$fullPath HOME=$USER_HOME; " +
+        // Direct chroot exec — no mount/unmount, requires chroot already mounted via arch-login
+        val shellCmd = "busybox chroot $CHROOT_ROOT /usr/bin/env " +
+            "PATH=$fullPath HOME=$USER_HOME " +
+            "/bin/bash -c '" +
             "adb connect localhost:5555 >/dev/null 2>&1; " +
             "$USER_HOME/.local/bin/claude -p \"$escapedQuery\" " +
             "--model $model " +
