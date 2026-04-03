@@ -22,9 +22,10 @@ data class ClaudeResult(
         ACTION,
     }
 
-    /** The actual Android filesystem path (strip /android-root prefix) */
+    /** The actual Android filesystem path (strip /android-root prefix, resolve /sdcard/) */
     val androidPath: String?
         get() = path?.removePrefix("/android-root")
+            ?.let { if (it.startsWith("/sdcard/")) it.replace("/sdcard/", "/storage/emulated/0/") else it }
 
     /** MIME type inferred from file extension */
     val mimeType: String?

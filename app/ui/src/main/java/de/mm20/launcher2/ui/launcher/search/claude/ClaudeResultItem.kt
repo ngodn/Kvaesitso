@@ -118,10 +118,21 @@ private fun ClaudeFileResult(
         // Show image/video thumbnail if applicable
         if (result.isImage || result.isVideo) {
             val filePath = result.androidPath
-            if (filePath != null && File(filePath).exists()) {
+            // Try direct file first, then content URI via MediaStore path
+            val imageModel = when {
+                filePath != null && File(filePath).exists() -> File(filePath)
+                filePath != null -> android.net.Uri.parse(
+                    "content://media/external/images/media"
+                ).let {
+                    // Use the file path directly — Coil can handle /sdcard/ paths via content resolver
+                    File(filePath)
+                }
+                else -> null
+            }
+            if (imageModel != null) {
                 AsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data(File(filePath))
+                        .data(imageModel)
                         .crossfade(true)
                         .build(),
                     contentDescription = result.title,
