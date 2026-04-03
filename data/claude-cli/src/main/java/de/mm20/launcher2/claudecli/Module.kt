@@ -7,5 +7,5 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val claudeCliModule = module {
-    single<SearchableRepository<Searchable>>(named<ClaudeResult>()) { ClaudeCodeCLIRepository(androidContext(), get()) }
+    single<SearchableRepository<Searchable>>(named<ClaudeResult>()) { ClaudeCodeCLIRepository(get()) }
 }
