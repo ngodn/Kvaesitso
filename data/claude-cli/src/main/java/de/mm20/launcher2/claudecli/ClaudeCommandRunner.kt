@@ -63,7 +63,7 @@ class ClaudeCommandRunner {
             "--model $model " +
             "--output-format json " +
             "--permission-mode dontAsk " +
-            "--allowedTools Bash,Read,Glob,Grep " +
+            "--allowedTools Bash,Read,Write,Glob,Grep,WebFetch,WebSearch,Agent,Skill,ToolSearch,NotebookEdit,AskUserQuestion,TodoWrite,EnterPlanMode,ExitPlanMode,EnterWorktree,ExitWorktree,CronCreate,CronDelete,CronList,RemoteTrigger,TaskOutput,TaskStop,LSP,SendMessage " +
             "--system-prompt \"$escapedPrompt\"'"
 
         try {
