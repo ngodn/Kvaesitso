@@ -115,6 +115,7 @@ dependencies {
     implementation(project(":services:badges"))
     implementation(project(":core:base"))
     implementation(project(":data:calculator"))
+    implementation(project(":data:claude-cli"))
     implementation(project(":data:calendar"))
     implementation(project(":data:contacts"))
     implementation(project(":core:crashreporter"))
