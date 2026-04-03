@@ -336,6 +336,11 @@ fun SearchColumn(
                         highlightedItem = bestMatch as? Website,
                         reverse = reverse,
                     )
+                    ClaudeResults(
+                        results = claudeResults,
+                        isLoading = claudeLoading,
+                        reverse = reverse,
+                    )
                     FileResults(
                         files = files,
                         onPermissionRequest = {
@@ -355,12 +360,6 @@ fun SearchColumn(
                         onShowAll = {
                             viewModel.expandCategory(SearchCategory.Files)
                         }
-                    )
-
-                    ClaudeResults(
-                        results = claudeResults,
-                        isLoading = claudeLoading,
-                        reverse = reverse,
                     )
                 }
             }

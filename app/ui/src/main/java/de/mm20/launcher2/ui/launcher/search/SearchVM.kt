@@ -262,6 +262,9 @@ class SearchVM : ViewModel(), KoinComponent {
                     }
 
             } else {
+                // Show Claude loading immediately for valid queries
+                claudeLoading.value = query.length >= 5
+
                 val hiddenItemKeys = if (!filters.hiddenItems) searchableRepository.getKeys(
                     maxVisibility = VisibilityLevel.Hidden,
                 ) else flowOf(emptyList())
@@ -322,7 +325,7 @@ class SearchVM : ViewModel(), KoinComponent {
                             results.websites?.applyRanking(query)
                         )
                         claudeResults.updateItems(results.claudeResults)
-                        claudeLoading.value = results.claudeResults == null && query.length >= 5
+                        if (!results.claudeResults.isNullOrEmpty()) claudeLoading.value = false
                         calculatorResults.updateItems(results.calculators)
                         unitConverterResults.updateItems(results.unitConverters)
 
