@@ -1,5 +1,6 @@
 package de.mm20.launcher2.claudecli
 
+import android.util.Log
 import de.mm20.launcher2.preferences.search.ClaudeSearchSettings
 import de.mm20.launcher2.search.Searchable
 import de.mm20.launcher2.search.SearchableRepository
@@ -20,7 +21,7 @@ class ClaudeCodeCLIRepository(
     private val filePathRegex = Regex("""/android-root/[^\s,;:'"()]+""")
 
     override fun search(query: String, allowNetwork: Boolean): Flow<ImmutableList<Searchable>> {
-        if (!allowNetwork) return flowOf(persistentListOf())
+        // Claude CLI runs locally via chroot — don't gate on allowNetwork
 
         return combineTransform(
             settings.enabled,
@@ -29,11 +30,14 @@ class ClaudeCodeCLIRepository(
         ) { enabled, model, minQueryLength ->
             emit(persistentListOf())
 
-            if (!enabled) return@combineTransform
-            if (query.length < minQueryLength) return@combineTransform
+            if (!enabled) { Log.d("ClaudeCLI", "Disabled"); return@combineTransform }
+            if (query.length < minQueryLength) { Log.d("ClaudeCLI", "Query too short: ${query.length} < $minQueryLength"); return@combineTransform }
             if (query.isBlank()) return@combineTransform
 
-            val resultText = runner.execute(query, model) ?: return@combineTransform
+            Log.d("ClaudeCLI", "Executing query: $query (model=$model)")
+            val resultText = runner.execute(query, model)
+            if (resultText == null) { Log.e("ClaudeCLI", "Runner returned null"); return@combineTransform }
+            Log.d("ClaudeCLI", "Got result: ${resultText.take(200)}")
 
             val results = mutableListOf<Searchable>()
 
