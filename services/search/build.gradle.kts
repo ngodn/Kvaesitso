@@ -52,6 +52,7 @@ dependencies {
     implementation(project(":data:unitconverter"))
     implementation(project(":data:customattrs"))
     implementation(project(":data:search-actions"))
+    implementation(project(":data:claude-cli"))
 
     implementation(project(":core:base"))
     implementation(project(":core:preferences"))

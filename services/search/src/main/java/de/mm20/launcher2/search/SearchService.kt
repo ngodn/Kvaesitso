@@ -1,6 +1,7 @@
 package de.mm20.launcher2.search
 
 import android.util.Log
+import de.mm20.launcher2.claudecli.ClaudeResult
 import de.mm20.launcher2.calculator.CalculatorRepository
 import de.mm20.launcher2.data.customattrs.CustomAttributesRepository
 import de.mm20.launcher2.data.customattrs.utils.withCustomLabels
@@ -50,6 +51,7 @@ internal class SearchServiceImpl(
     private val searchActionService: SearchActionService,
     private val customAttributesRepository: CustomAttributesRepository,
     private val profileManager: ProfileManager,
+    private val claudeRepository: SearchableRepository<Searchable>,
 ) : SearchService {
 
     override fun search(
@@ -249,6 +251,18 @@ internal class SearchServiceImpl(
                         }
                 }
             }
+            if (filters.claude) {
+                launch {
+                    delay(1000)
+                    claudeRepository.search(query, filters.allowNetwork)
+                        .collectLatest { r ->
+                            results.update {
+                                @Suppress("UNCHECKED_CAST")
+                                it.copy(claudeResults = r as? List<ClaudeResult>)
+                            }
+                        }
+                }
+            }
             if (filters.files) {
                 launch {
                     fileRepository.search(
@@ -327,6 +341,7 @@ data class SearchResults(
     val wikipedia: List<Article>? = null,
     val locations: List<Location>? = null,
     val searchActions: List<SearchAction>? = null,
+    val claudeResults: List<ClaudeResult>? = null,
 )
 
 data class AllAppsResults(
@@ -347,5 +362,6 @@ fun SearchResults.toList(): List<Searchable> {
         websites,
         wikipedia,
         searchActions,
+        claudeResults,
     ).flatten()
 }

@@ -1,5 +1,6 @@
 package de.mm20.launcher2.search
 
+import de.mm20.launcher2.claudecli.ClaudeResult
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -19,6 +20,7 @@ val searchModule = module {
             get(),
             get(),
             get(),
+            get(named<ClaudeResult>()),
         )
     }
 }
