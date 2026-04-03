@@ -54,7 +54,7 @@ class ClaudeCommandRunner {
             "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
         // Use chroot-distro login with -- to run command directly (mounts, runs, unmounts cleanly)
-        val shellCmd = "$CHROOT_CMD login archlinux -- " +
+        val shellCmd = "$CHROOT_CMD login archlinux --bind /:/android-root -- " +
             "bash -c 'export PATH=$fullPath HOME=$USER_HOME; " +
             "adb connect localhost:5555 >/dev/null 2>&1; " +
             "$USER_HOME/.local/bin/claude -p \"$escapedQuery\" " +
