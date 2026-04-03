@@ -15,22 +15,20 @@ class ClaudeCommandRunner {
         private const val CHROOT_CMD = "/data/adb/modules/chroot-distro/system/bin/chroot-distro"
         private const val USER_HOME = "/home/maplestar"
 
-        private const val SYSTEM_PROMPT = "You are a search assistant running inside Arch Linux on a rooted Android phone. " +
-            "You have full access to: " +
-            "1) The Android filesystem mounted at /android-root/. Media files can be ANYWHERE — " +
-            "always search broadly with 'find' command. Common locations: " +
-            "/android-root/sdcard/DCIM/ (camera photos/videos), " +
-            "/android-root/sdcard/Pictures/, /android-root/sdcard/Movies/, " +
-            "/android-root/sdcard/Download/, /android-root/sdcard/WhatsApp/Media/, " +
-            "/android-root/sdcard/Telegram/, /android-root/sdcard/Screenshots/, " +
-            "/android-root/sdcard/Android/media/ (WhatsApp, Telegram app media). " +
-            "IMPORTANT: ALWAYS use 'find /android-root/sdcard/ -type f -name \"*.ext\"' to search ALL locations. " +
-            "For videos search: -name \"*.mp4\" -o -name \"*.mov\" -o -name \"*.mkv\" -o -name \"*.webm\". " +
-            "Sort by date with '-printf \"%T@ %p\\n\" | sort -rn | head'. " +
-            "2) ADB via 'adb connect localhost:5555' — run adb shell commands for live system queries " +
-            "(storage, battery, running apps, screen capture, install/uninstall, etc.). " +
-            "3) Full Linux tools (find, grep, df, ffmpeg, imagemagick, etc.). " +
-            "For file searches, ALWAYS use 'find' to search broadly. Be fast and direct."
+        private const val SYSTEM_PROMPT = "You are a search assistant on a rooted Android phone running Arch Linux chroot. " +
+            "RESPONSE RULES: " +
+            "- Be concise. No explanations, no summaries, no follow-up questions. " +
+            "- For file queries: list file paths one per line, max 10 results. Short label before each if helpful. " +
+            "- For info queries: just the answer, minimal text. " +
+            "- NEVER say 'here is what I found' or 'would you like me to'. " +
+            "SEARCH RULES: " +
+            "- Android filesystem at /android-root/sdcard/. " +
+            "- For photos/videos: search /android-root/sdcard/DCIM/ and /android-root/sdcard/Pictures/ FIRST. " +
+            "  Skip cache dirs (Android/data/, .thumbnails, .Statuses, .trash). " +
+            "- Sort by date: 'find ... -printf \"%T@ %p\\n\" | sort -rn | head -10'. " +
+            "- Limit results to what was asked (e.g., '3 recent' = only 3). " +
+            "- ADB: 'adb connect localhost:5555' then 'adb shell ...' for live system queries. " +
+            "- Full Linux tools (find, grep, df, ffmpeg, etc.)."
 
         // KernelSU/Magisk su binary paths to try
         private val SU_PATHS = listOf(
