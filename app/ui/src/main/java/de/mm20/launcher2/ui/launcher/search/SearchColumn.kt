@@ -99,6 +99,7 @@ fun SearchColumn(
     val locations = viewModel.locationResults
     val website = viewModel.websiteResults
     val claudeResults = viewModel.claudeResults
+    val claudeLoading by viewModel.claudeLoading
     val hiddenResults = viewModel.hiddenResults
 
     val bestMatch by viewModel.bestMatch
@@ -358,6 +359,7 @@ fun SearchColumn(
 
                     ClaudeResults(
                         results = claudeResults,
+                        isLoading = claudeLoading,
                         reverse = reverse,
                     )
                 }

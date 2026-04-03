@@ -121,6 +121,7 @@ class SearchVM : ViewModel(), KoinComponent {
     val searchActionResults = mutableStateListOf<SearchAction>()
     val locationResults = mutableStateListOf<Location>()
     val claudeResults = mutableStateListOf<ClaudeResult>()
+    val claudeLoading = mutableStateOf(false)
 
     var previousResults: SearchResults? = null
 
@@ -321,6 +322,7 @@ class SearchVM : ViewModel(), KoinComponent {
                             results.websites?.applyRanking(query)
                         )
                         claudeResults.updateItems(results.claudeResults)
+                        claudeLoading.value = results.claudeResults == null && query.length >= 5
                         calculatorResults.updateItems(results.calculators)
                         unitConverterResults.updateItems(results.unitConverters)
 
