@@ -22,6 +22,7 @@ import de.mm20.launcher2.search.searchModule
 import de.mm20.launcher2.unitconverter.unitConverterModule
 import de.mm20.launcher2.websites.websitesModule
 import de.mm20.launcher2.widgets.widgetsModule
+import de.mm20.launcher2.claudecli.claudeCliModule
 import de.mm20.launcher2.wikipedia.wikipediaModule
 import de.mm20.launcher2.database.databaseModule
 import de.mm20.launcher2.debug.initDebugMode
@@ -89,6 +90,7 @@ class LauncherApplication : Application(), CoroutineScope, ImageLoaderFactory {
                     weatherModule,
                     websitesModule,
                     widgetsModule,
+                    claudeCliModule,
                     wikipediaModule,
                     locationsModule,
                     servicesTagsModule,
