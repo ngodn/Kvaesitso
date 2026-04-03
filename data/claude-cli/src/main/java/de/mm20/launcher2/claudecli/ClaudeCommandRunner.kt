@@ -60,8 +60,7 @@ class ClaudeCommandRunner {
             "$USER_HOME/.local/bin/claude -p \"$escapedQuery\" " +
             "--model $model " +
             "--output-format json " +
-            "--permission-mode dontAsk " +
-            "--allowedTools Bash,Read,Write,Glob,Grep,WebFetch,WebSearch,Agent,Skill,ToolSearch,NotebookEdit,AskUserQuestion,TodoWrite,EnterPlanMode,ExitPlanMode,EnterWorktree,ExitWorktree,CronCreate,CronDelete,CronList,RemoteTrigger,TaskOutput,TaskStop,LSP,SendMessage " +
+            "--dangerously-skip-permissions " +
             "--system-prompt \"$escapedPrompt\"'"
 
         try {
