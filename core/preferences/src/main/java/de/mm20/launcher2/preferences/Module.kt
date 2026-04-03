@@ -14,6 +14,7 @@ import de.mm20.launcher2.preferences.search.SearchFilterSettings
 import de.mm20.launcher2.preferences.search.ShortcutSearchSettings
 import de.mm20.launcher2.preferences.search.UnitConverterSettings
 import de.mm20.launcher2.preferences.search.WebsiteSearchSettings
+import de.mm20.launcher2.preferences.search.ClaudeSearchSettings
 import de.mm20.launcher2.preferences.search.WikipediaSearchSettings
 import de.mm20.launcher2.preferences.ui.BadgeSettings
 import de.mm20.launcher2.preferences.ui.ClockWidgetSettings
@@ -40,6 +41,7 @@ val preferencesModule = module {
     factory { ShortcutSearchSettings(get()) }
     factory { FavoritesSettings(get()) }
     factory { WikipediaSearchSettings(get()) }
+    factory { ClaudeSearchSettings(get()) }
     factory { IconSettings(get()) }
     factory { RankingSettings(get()) }
     factory { CalendarSearchSettings(get()) }

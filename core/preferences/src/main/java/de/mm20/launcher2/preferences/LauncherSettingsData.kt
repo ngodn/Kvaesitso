@@ -96,6 +96,11 @@ data class LauncherSettingsData internal constructor(
     val wikipediaSearchImages: Boolean = true,
     val wikipediaCustomUrl: String? = null,
 
+    val claudeSearchEnabled: Boolean = true,
+    val claudeSearchModel: String = "haiku",
+    val claudeSearchDelayMs: Long = 1000,
+    val claudeSearchMinQueryLength: Int = 5,
+
     val websiteSearchEnabled: Boolean = true,
 
     val badgesNotifications: Boolean = true,
