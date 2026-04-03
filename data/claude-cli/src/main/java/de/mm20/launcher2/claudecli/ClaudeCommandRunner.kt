@@ -15,13 +15,16 @@ class ClaudeCommandRunner {
         private const val CHROOT_CMD = "/data/adb/modules/chroot-distro/system/bin/chroot-distro"
         private const val USER_HOME = "/home/maplestar"
 
-        private const val SYSTEM_PROMPT = "You are a search assistant for an Android phone. " +
-            "The Android filesystem is mounted at /android-root/. Key paths: " +
-            "photos at /android-root/sdcard/DCIM/Camera/, " +
-            "downloads at /android-root/sdcard/Download/, " +
-            "apps at /android-root/data/app/, " +
+        private const val SYSTEM_PROMPT = "You are a search assistant running inside Arch Linux on a rooted Android phone. " +
+            "You have full access to: " +
+            "1) The Android filesystem mounted at /android-root/ — photos at /android-root/sdcard/DCIM/Camera/, " +
+            "downloads at /android-root/sdcard/Download/, apps at /android-root/data/app/, " +
             "system info at /android-root/system/build.prop. " +
-            "Be fast and direct. Return a concise answer."
+            "2) ADB via 'adb connect localhost:5555' — you can run adb shell commands to query the live Android system " +
+            "(storage info, battery, running apps, screen capture, install/uninstall apps, etc.). " +
+            "3) Full Linux tools (find, grep, ffmpeg, imagemagick, etc.). " +
+            "Use adb shell for live system queries (storage, battery, processes). " +
+            "Use the filesystem for file searches. Be fast and direct."
 
         // KernelSU/Magisk su binary paths to try
         private val SU_PATHS = listOf(
@@ -43,14 +46,19 @@ class ClaudeCommandRunner {
         val escapedQuery = query.replace("'", "'\\''")
         val escapedPrompt = SYSTEM_PROMPT.replace("'", "'\\''")
 
+        val fullPath = "$USER_HOME/.local/bin:$USER_HOME/.local/share/mise/shims:$USER_HOME/.cargo/bin:" +
+            "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+        // Connect ADB to localhost first (for live Android queries), then run claude
         val shellCmd = "$CHROOT_CMD login archlinux --bind /:/android-root -- " +
-            "env PATH=$USER_HOME/.local/bin:$USER_HOME/.local/share/mise/shims:\$PATH HOME=$USER_HOME " +
-            "$USER_HOME/.local/bin/claude -p '$escapedQuery' " +
+            "bash -c 'export PATH=$fullPath HOME=$USER_HOME; " +
+            "adb connect localhost:5555 >/dev/null 2>&1; " +
+            "$USER_HOME/.local/bin/claude -p \"$escapedQuery\" " +
             "--model $model " +
             "--output-format json " +
             "--permission-mode dontAsk " +
-            "--allowedTools 'Bash,Read,Glob,Grep' " +
-            "--system-prompt '$escapedPrompt'"
+            "--allowedTools Bash,Read,Glob,Grep " +
+            "--system-prompt \"$escapedPrompt\"'"
 
         try {
             // Try su binary directly first, fall back to sh -c su
