@@ -44,6 +44,7 @@ import de.mm20.launcher2.ui.component.LauncherCard
 import de.mm20.launcher2.ui.launcher.search.apps.AppResults
 import de.mm20.launcher2.ui.launcher.search.calculator.CalculatorResults
 import de.mm20.launcher2.ui.launcher.search.calendar.CalendarResults
+import de.mm20.launcher2.ui.launcher.search.claude.ClaudeResults
 import de.mm20.launcher2.ui.launcher.search.contacts.ContactResults
 import de.mm20.launcher2.ui.launcher.search.favorites.SearchFavorites
 import de.mm20.launcher2.ui.launcher.search.favorites.SearchFavoritesVM
@@ -97,6 +98,7 @@ fun SearchColumn(
     val wikipedia = viewModel.articleResults
     val locations = viewModel.locationResults
     val website = viewModel.websiteResults
+    val claudeResults = viewModel.claudeResults
     val hiddenResults = viewModel.hiddenResults
 
     val bestMatch by viewModel.bestMatch
@@ -352,6 +354,11 @@ fun SearchColumn(
                         onShowAll = {
                             viewModel.expandCategory(SearchCategory.Files)
                         }
+                    )
+
+                    ClaudeResults(
+                        results = claudeResults,
+                        reverse = reverse,
                     )
                 }
             }

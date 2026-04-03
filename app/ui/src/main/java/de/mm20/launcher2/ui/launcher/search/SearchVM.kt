@@ -21,6 +21,7 @@ import de.mm20.launcher2.preferences.ui.SearchUiSettings
 import de.mm20.launcher2.profiles.Profile
 import de.mm20.launcher2.profiles.ProfileManager
 import de.mm20.launcher2.search.AppShortcut
+import de.mm20.launcher2.claudecli.ClaudeResult
 import de.mm20.launcher2.search.Application
 import de.mm20.launcher2.search.Article
 import de.mm20.launcher2.search.CalendarEvent
@@ -119,6 +120,7 @@ class SearchVM : ViewModel(), KoinComponent {
     val unitConverterResults = mutableStateListOf<UnitConverter>()
     val searchActionResults = mutableStateListOf<SearchAction>()
     val locationResults = mutableStateListOf<Location>()
+    val claudeResults = mutableStateListOf<ClaudeResult>()
 
     var previousResults: SearchResults? = null
 
@@ -318,6 +320,7 @@ class SearchVM : ViewModel(), KoinComponent {
                         websiteResults.updateItems(
                             results.websites?.applyRanking(query)
                         )
+                        claudeResults.updateItems(results.claudeResults)
                         calculatorResults.updateItems(results.calculators)
                         unitConverterResults.updateItems(results.unitConverters)
 
